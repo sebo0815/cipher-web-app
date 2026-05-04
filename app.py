@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
 
+if __name__ == "__main__":
+    app.run()
+
 """
  This is a simple Caesar cipher encryption function. 
  I wrote this as a project for my certification. I am still open for job offers, so if your company
