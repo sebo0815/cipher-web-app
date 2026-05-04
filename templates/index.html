@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryptoniter</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: #00ff9f;
+            font-family: monospace;
+            background: black;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+    
+
+        .background {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.2;
+            background: black;
+        }
+
+        ::placeholder {
+            color: #00ff9f !important;
+            opacity: 0.6;
+        }
+
+        .text{
+            color: #00ff9f !important;
+            opacity: 0.6;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .margin-top {
+            padding-right: 50px;
+            font-size: 80px;
+            margin-bottom: 50px;
+        }  
+
+        .card {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid #00ff9f;
+            box-shadow: 0 0 20px #00ff9f33;
+        }
+
+        textarea, input {
+            background: black !important;
+            color: #00ff9f !important;
+            border: 1px solid #00ff9f !important;
+        }
+
+        .btn-hacker {
+            background: transparent;
+            border: 1px solid #00ff9f;
+            color: #00ff9f;
+        }
+
+        .btn-hacker:hover {
+            background: #00ff9f;
+            color: black;
+        }
+
+*/ hier habe ich was eingefügt */
+
+    .card {
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid #00ff9f;
+    box-shadow: 0 0 25px #00ff9f55;
+    border-radius: 12px;
+}
+
+
+
+textarea,
+input {
+    background: #020202 !important;
+    color: #00ff9f !important;
+    border: 1px solid #00ff9f !important;
+    font-family: monospace;
+}
+
+textarea::placeholder,
+input::placeholder {
+    color: #66ffc2 !important;
+    opacity: 1;
+}
+
+input:focus,
+textarea:focus {
+    box-shadow: 0 0 12px #00ff9f !important;
+    outline: none !important;
+}
+
+.btn-hacker {
+    background: transparent;
+    border: 1px solid #00ff9f;
+    color: #00ff9f;
+    font-family: monospace;
+    letter-spacing: 1px;
+}
+
+.btn-hacker:hover {
+    background: #00ff9f;
+    color: black;
+    box-shadow: 0 0 15px #00ff9f;
+}
+
+*/Ende der Einfügung*/
+
+
+.info-box {
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid #00ff9f;
+    color: #66ffc2;
+    max-width: 420px;
+    box-shadow: 0 0 15px #00ff9f33;
+    font-family: monospace;
+    margin-top: 50px;
+}
+
+.info-box h5 {
+    color: #00ff9f;
+    margin-bottom: 10px;
+}
+
+.info-box p {
+    font-size: 14px;
+    line-height: 1.5;
+    
+}
+
+    </style>
+</head>
+
+
+<body>
+    
+
+<div class="background">
+    <canvas id="matrix"></canvas>
+</div>
+       
+<h1 class=" text-center margin-top">Encryptoniter</h1>
+
+<div class="content">
+
+    
+    
+    <div class="card p-4" style="width: 420px;">
+        <h4 class="mb-3 text-center text">🔐 Encrypt</h4>
+
+        <!-- Text Eingabe -->
+        <textarea id="inputText" class="form-control mb-3" rows="3" placeholder="Text to encrypt..."></textarea>
+
+        <!-- Schlüssel Eingabe -->
+        <input type="number" id="shiftValue" class="form-control mb-3"
+               placeholder="number between 1 and 25" min="1" max="25">
+
+        
+        <button class="btn btn-hacker w-100 mb-2" onclick="processText()">Encrypt</button>
+        <button class="class=btn btn-hacker w-100 mb-3" onclick="decryptText()">Decrypt</button>
+
+        <!-- Ausgabe -->
+        <textarea id="outputText" class="form-control" rows="3" placeholder="Encrypted text" readonly></textarea>
+    </div>
+    
+    
+    
+    <div class="info-box p-4">
+           <h5>About this Tool</h5>
+    <p>
+        This application demonstrates a classic Caesar cipher implemented in Python.
+        It allows users to encrypt and decrypt text by applying a configurable shift
+        within the alphabet.
+    </p>
+
+    <p>
+        The project showcases how a Python backend (Flask) can be integrated with a
+        modern web interface to create an interactive user experience.
+    </p>
+
+    <h5>About Me</h5>
+    <p>
+        I am an aspiring Python developer with a strong interest in backend development
+        and web technologies. I enjoy building practical applications that combine
+        clean logic with user-friendly interfaces.
+    </p>
+
+    <p>
+        Through projects like this, I am continuously improving my skills in Python,
+        API development, and full-stack fundamentals.
+    </p>
+
+    <p>
+        I am currently seeking an entry-level position as a Python developer where I can
+        contribute, learn, and grow within a professional environment.
+    </p>
+        </div>  
+
+</div>
+
+<script>
+async function processText() {
+    const text = document.getElementById("inputText").value;
+    const shift = document.getElementById("shiftValue").value;
+
+    const response = await fetch("/encrypt", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            text: text,
+            shift: shift
+        })
+    });
+
+    const data = await response.json();
+
+    document.getElementById("outputText").value = data.result;
+}
+</script>
+
+<script>
+async function decryptText() {
+    const text = document.getElementById("inputText").value;
+    const shift = document.getElementById("shiftValue").value;
+
+    const response = await fetch("/decrypt", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            text: text,
+            shift: shift
+        })
+    });
+
+    const data = await response.json();
+    document.getElementById("outputText").value = data.result;
+}
+</script>
+
+<script>
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = Array.from({ length: columns }).map(() => 1);
+
+function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#00ff9f";
+    ctx.font = fontSize + "px monospace";
+
+    drops.forEach((y, i) => {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, y * fontSize);
+
+        if (y * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+        }
+
+        drops[i]++;
+    });
+}
+
+setInterval(drawMatrix, 33);
+</script>
+
+</body>
+</html>
